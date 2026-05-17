@@ -11,6 +11,7 @@ internal static class UIManager
         InformationWindow.CreateWindow("Information", "Information Title");
         ModListWindow.CreateAndInit("NeoModList");
         NewModListWindow.CreateAndInit("NMLMenu");
+        ExternalModHotLoadWindow.CreateAndInit("ExternalMods", new Vector2(650, 320));
         WorkshopModListWindow.CreateAndInit("WorkshopMods");
         ModUploadWindow.CreateAndInit("ModUpload");
         ModUploadingProgressWindow.CreateAndInit("ModUploadingProgress");
