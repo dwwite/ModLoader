@@ -14,6 +14,7 @@ internal class NewModListWindow : AbstractWideWindow<NewModListWindow>
     private readonly Dictionary<ModDeclare, ModInfoPanel> ModInfoPanels = new();
     private          DisplayType                          CurrentDisplayType;
     private          ModDeclare                           CurrentSelected;
+    private          SimpleButton                         ExternalModsButton;
     private          ObjectPoolGenericMono<ModListItem>   ListItemPool;
     private          RectTransform                        ListPart;
     private          List<ModDeclare>                     ListToShow;
@@ -168,6 +169,9 @@ internal class NewModListWindow : AbstractWideWindow<NewModListWindow>
                                   tip_name = "UploadMod Title"
                               });
         UploadModButton.Background.enabled = false;
+        ExternalModsButton = Instantiate(SimpleButton.Prefab, rect_transform);
+        ExternalModsButton.name = "ExternalModsButton";
+        ExternalModsButton.Setup(OpenExternalModsWindow, null, "HotLoad", new Vector2(72, 32));
 
         rect_transform = mod_info_part.GetComponent<RectTransform>();
         rect_transform.sizeDelta = new Vector2(350, 200);
@@ -302,6 +306,11 @@ internal class NewModListWindow : AbstractWideWindow<NewModListWindow>
     private void UploadSelectedMod()
     {
         throw new NotImplementedException();
+    }
+
+    private void OpenExternalModsWindow()
+    {
+        ExternalModHotLoadWindow.ShowWindow();
     }
 
     private void ReloadSelectedMod()
