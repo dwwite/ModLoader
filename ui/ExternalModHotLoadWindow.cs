@@ -35,8 +35,25 @@ internal class ExternalModHotLoadWindow : AbstractWideWindow<ExternalModHotLoadW
 
     public static void ShowWindow()
     {
+        if (Instance == null)
+        {
+            CreateAndInit("ExternalMods", new Vector2(650, 320));
+        }
+
         Instance.RefreshPathInput();
         Instance.RefreshCandidates();
+
+        ScrollWindow window = ScrollWindow.get(WindowId);
+        if (window != null)
+        {
+            window.gameObject.SetActive(true);
+            window.transform.SetAsLastSibling();
+            window.clickShow();
+            return;
+        }
+
+        Instance.gameObject.SetActive(true);
+        Instance.transform.SetAsLastSibling();
         ScrollWindow.showWindow(WindowId);
     }
 
@@ -62,35 +79,59 @@ internal class ExternalModHotLoadWindow : AbstractWideWindow<ExternalModHotLoadW
         toolbarLayout.padding = new RectOffset(8, 8, 2, 2);
 
         _pathInput = Instantiate(TextInput.Prefab, toolbar.transform);
-        _pathInput.SetSize(new Vector2(220, 28));
+        _pathInput.SetSize(new Vector2(120, 28));
         _pathInput.Setup(_currentRootPath ?? string.Empty, value => { _currentRootPath = value; });
 
         AddToolbarButton(toolbar.transform, "Use Path", () =>
         {
             _currentRootPath = _pathInput.input.text;
             RefreshCandidates();
-        }, 84);
+        }, 72);
+
+        AddToolbarButton(toolbar.transform, "Browse", () =>
+        {
+            bool success = ExternalModHotLoadService.TryBrowseForFolder(_currentRootPath, out string selectedPath,
+                out string message);
+            SetStatus(message);
+            if (success)
+            {
+                _currentRootPath = selectedPath;
+                RefreshPathInput();
+                RefreshCandidates();
+            }
+            else
+            {
+                WorldTip.showNow(message, true, "top", 4f);
+            }
+        }, 66);
 
         AddToolbarButton(toolbar.transform, "Documents", () =>
         {
             _currentRootPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             RefreshPathInput();
             RefreshCandidates();
-        }, 88);
+        }, 62);
 
         AddToolbarButton(toolbar.transform, "Downloads", () =>
         {
             _currentRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
             RefreshPathInput();
             RefreshCandidates();
-        }, 88);
+        }, 82);
 
         AddToolbarButton(toolbar.transform, "Desktop", () =>
         {
             _currentRootPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             RefreshPathInput();
             RefreshCandidates();
-        }, 82);
+        }, 76);
+
+        AddToolbarButton(toolbar.transform, "Explorer", () =>
+        {
+            bool success = ExternalModHotLoadService.TryOpenInFileManager(_currentRootPath, out string message);
+            SetStatus(message);
+            WorldTip.showNow(message, !success, "top", success ? 3f : 4f);
+        }, 78);
     }
 
     private void CreateList()
@@ -217,7 +258,9 @@ internal class ExternalModHotLoadWindow : AbstractWideWindow<ExternalModHotLoadW
                 return;
             }
 
-            Application.OpenURL(_selectedCandidate.SourceFolderPath);
+            bool success = ExternalModHotLoadService.TryOpenInFileManager(_selectedCandidate.SourceFolderPath, out string message);
+            SetStatus(message);
+            WorldTip.showNow(message, !success, "top", success ? 3f : 4f);
         }, null, "Open Folder", new Vector2(98, 28));
 
         GameObject statusObject = new GameObject("Status", typeof(Text));
