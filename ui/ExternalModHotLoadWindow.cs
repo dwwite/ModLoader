@@ -273,7 +273,7 @@ internal class ExternalModHotLoadWindow : AbstractWideWindow<ExternalModHotLoadW
         _statusText.resizeTextForBestFit = true;
         _statusText.resizeTextMinSize = 8;
         _statusText.resizeTextMaxSize = 12;
-        _statusText.text = "Choose a folder root to scan for external mods.";
+        _statusText.text = "Choose a folder root to scan for mods.";
         _statusText.GetComponent<RectTransform>().sizeDelta = new Vector2(320, 24);
     }
 
@@ -323,7 +323,7 @@ internal class ExternalModHotLoadWindow : AbstractWideWindow<ExternalModHotLoadW
         {
             _selectedCandidate = _candidates[0];
             RefreshDetails();
-            SetStatus($"Found {_candidates.Count} external mod(s) under {normalizedPath}.");
+            SetStatus($"Found {_candidates.Count} mod(s) under {normalizedPath}.");
         }
     }
 
