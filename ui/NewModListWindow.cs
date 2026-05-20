@@ -172,6 +172,7 @@ internal class NewModListWindow : AbstractWideWindow<NewModListWindow>
         ExternalModsButton = Instantiate(SimpleButton.Prefab, rect_transform);
         ExternalModsButton.name = "ExternalModsButton";
         ExternalModsButton.Setup(OpenExternalModsWindow, null, "HotLoad", new Vector2(72, 32));
+        UploadModButton.gameObject.SetActive(false);
 
         rect_transform = mod_info_part.GetComponent<RectTransform>();
         rect_transform.sizeDelta = new Vector2(350, 200);
@@ -305,7 +306,8 @@ internal class NewModListWindow : AbstractWideWindow<NewModListWindow>
 
     private void UploadSelectedMod()
     {
-        throw new NotImplementedException();
+        WorldTip.showNow("Upload is not available in this build.", true, "top", 4f);
+        LogService.LogWarning("UploadSelectedMod is not available in this build.");
     }
 
     private void OpenExternalModsWindow()
